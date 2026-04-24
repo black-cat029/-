@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ХолодОк — интернет-магазин мороженого</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: #fef7e8;
+            color: #3e2a1f;
+        }
+
+        .header {
+            background: #fff3e0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(255,243,224,0.92);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #2c7da0, #61a5c2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #5c3e2b;
+            font-weight: 500;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: #2c7da0;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -10px;
+            right: -14px;
+            background: #2c7da0;
+            color: white;
+            border-radius: 30px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: #2c7da0;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #2c7da0;
+            color: #2c7da0;
+        }
+
+        .btn-outline:hover {
+            background: #2c7da0;
+            color: white;
+        }
+
+        .btn:hover {
+            background: #1f5e7a;
+            transform: scale(0.97);
+        }
+
+        .page {
+            display: none;
+            padding: 40px 0 60px;
+            animation: fade 0.3s ease;
+        }
+
+        .active-page {
+            display: block;
+        }
+
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(8px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 32px;
+            margin-top: 32px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: 0.25s;
+            padding: 20px 16px 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.1);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 250px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, #fff9f0 0%, #fdebd0 100%);
+            margin-bottom: 16px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .product-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 8px 0 4px;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #2c7da0;
+            margin: 8px 0;
+        }
+
+        .cart-items {
+            background: white;
+            border-radius: 28px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #ffdfc4;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .cart-item-info {
+            flex: 2;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cart-item-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .cart-quantity {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .cart-quantity button {
+            background: #ffe1cf;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cart-total {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: right;
+            margin: 24px 0;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 32px;
+            padding: 32px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border: 1px solid #ffcdb0;
+            border-radius: 60px;
+            background: #fffaf5;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #2c7da0;
+        }
+
+        .order-summary {
+            background: #fff2e6;
+            border-radius: 24px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 32px;
+            margin-top: 24px;
+        }
+
+        .profile-sidebar {
+            background: white;
+            border-radius: 32px;
+            padding: 28px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #2c7da0, #61a5c2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 48px;
+            color: white;
+        }
+
+        .profile-sidebar h3 {
+            margin: 12px 0 4px;
+        }
+
+        .profile-sidebar p {
+            color: #ad8b72;
+            font-size: 14px;
+        }
+
+        .profile-sidebar .edit-profile-btn {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .profile-main {
+            background: white;
+            border-radius: 32px;
+            padding: 28px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .profile-tabs {
+            display: flex;
+            gap: 16px;
+            border-bottom: 2px solid #ffe0ca;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .profile-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #ad8b72;
+            transition: 0.2s;
+        }
+
+        .profile-tab.active {
+            color: #2c7da0;
+            border-bottom: 3px solid #2c7da0;
+            margin-bottom: -2px;
+        }
+
+        .profile-tab-content {
+            display: none;
+        }
+
+        .profile-tab-content.active {
+            display: block;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 14px 0;
+            border-bottom: 1px solid #ffe0ca;
+            flex-wrap: wrap;
+        }
+
+        .info-label {
+            width: 120px;
+            font-weight: 600;
+            color: #5c3e2b;
+        }
+
+        .info-value {
+            flex: 1;
+            color: #3e2a1f;
+        }
+
+        .order-card {
+            background: #fff9f0;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .order-card:hover {
+            background: #ffe8d8;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-weight: 700;
+            flex-wrap: wrap;
+        }
+
+        .order-products {
+            font-size: 14px;
+            color: #ad8b72;
+        }
+
+        .order-details {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #ffdfc4;
+        }
+
+        .order-details.show {
+            display: block;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #ffdfc4;
+        }
+
+        .auth-message {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 48px;
+        }
+
+        .error-text {
+            color: #e56745;
+            font-size: 12px;
+            margin-top: -8px;
+            margin-bottom: 8px;
+        }
+
+        .success-text {
+            color: #4caf50;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .saved-profiles {
+            background: white;
+            border-radius: 32px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .profile-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .profile-card-small {
+            background: #fff9f0;
+            border-radius: 24px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 2px solid transparent;
+            min-width: 180px;
+        }
+
+        .profile-card-small:hover {
+            border-color: #2c7da0;
+            transform: translateY(-2px);
+        }
+
+        .profile-card-small .email {
+            font-weight: 600;
+            color: #2c7da0;
+        }
+
+        .profile-card-small .name {
+            font-size: 14px;
+            color: #ad8b72;
+        }
+
+        .auth-choice {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .auth-choice-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ffcdb0;
+            background: white;
+            border-radius: 60px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .auth-choice-btn.active {
+            border-color: #2c7da0;
+            background: #2c7da0;
+            color: white;
+        }
+        .password-requirements {
+            font-size: 11px;
+            color: #ad8b72;
+            margin-top: -8px;
+            margin-bottom: 8px;
+            padding-left: 8px;
+            display: none;
+        }
+        .password-requirements.show {
+            display: block;
+        }
+        .requirement {
+            margin: 2px 0;
+        }
+        .requirement.ok {
+            color: #4caf50;
+        }
+        .requirement.bad {
+            color: #e56745;
+        }
+
+        /* Модальное окно товара */
+        .product-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1002;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-modal-content {
+            background: white;
+            max-width: 550px;
+            width: 90%;
+            border-radius: 48px;
+            padding: 32px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .product-modal-img {
+            width: 100%;
+            border-radius: 32px;
+            margin-bottom: 20px;
+        }
+        .product-modal-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .product-modal-price {
+            font-size: 24px;
+            color: #2c7da0;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .product-modal-desc {
+            color: #5c3e2b;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .product-modal-ingredients {
+            background: #fff9f0;
+            padding: 16px;
+            border-radius: 24px;
+            margin-bottom: 20px;
+        }
+        .product-modal-ingredients h4 {
+            margin-bottom: 8px;
+            color: #2c7da0;
+        }
+        .ingredient-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed #ffdfc4;
+            font-size: 14px;
+        }
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff9f0;
+            padding: 16px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+        }
+        .quantity-selector label {
+            font-weight: 600;
+            color: #5c3e2b;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .quantity-controls button {
+            background: #ffe1cf;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .quantity-controls button:hover {
+            background: #2c7da0;
+            color: white;
+        }
+        .quantity-controls span {
+            font-size: 18px;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+        .modal-total-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c7da0;
+            text-align: right;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 800px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+            .catalog-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="container header-content">
+        <div class="logo">
+            ХолодОк
+        </div>
+        <div class="nav-links">
+            <a data-page="home">Главная</a>
+            <a data-page="profile">Профиль</a>
+            <div class="cart-icon" id="cartIcon">
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+            <button class="btn-outline btn" id="logoutBtn" style="display:none">Выйти</button>
+            <button class="btn" id="loginRegisterBtn">Вход</button>
+        </div>
+    </div>
+</div>
+
+<main class="container">
+    <div id="homePage" class="page active-page">
+        <div id="homeContent"></div>
+    </div>
+
+    <div id="cartPage" class="page">
+        <h1>Корзина</h1>
+        <div id="cartContainer"></div>
+        <div class="cart-total" id="cartTotalPrice">0 ₽</div>
+        <button class="btn" id="checkoutBtn">Оформить заказ →</button>
+        <button class="btn-outline btn" id="backToHomeBtn">Вернуться на главную</button>
+    </div>
+
+    <div id="profilePage" class="page">
+        <h1>Личный кабинет</h1>
+        <div id="profileContainer"></div>
+    </div>
+
+    <div id="checkoutPage" class="page">
+        <h1>Оформление заказа</h1>
+        <div class="form-card">
+            <input type="text" id="deliveryName" placeholder="Ваше имя" readonly style="background:#f5f5f5">
+            <input type="tel" id="deliveryPhone" placeholder="Телефон">
+            <input type="text" id="deliveryAddress" placeholder="Адрес доставки">
+            <textarea rows="2" id="deliveryComment" placeholder="Комментарий / время доставки (холодовая цепь гарантирована)"></textarea>
+            <div class="order-summary" id="checkoutSummary"></div>
+            <button class="btn" id="confirmOrderBtn">Подтвердить заказ</button>
+            <button class="btn-outline btn" id="cancelCheckoutBtn">Назад</button>
+        </div>
+    </div>
+
+    <div id="productModal" class="product-modal">
+        <div class="product-modal-content">
+            <img id="modalImg" class="product-modal-img" src="" alt="">
+            <div class="product-modal-title" id="modalTitle"></div>
+            <div class="product-modal-price" id="modalPrice"></div>
+            <div class="product-modal-desc" id="modalDesc"></div>
+            <div class="product-modal-ingredients" id="modalIngredients">
+                <h4>Состав и вес:</h4>
+                <div id="modalComposition"></div>
+            </div>
+            <div class="quantity-selector">
+                <label>Количество порций:</label>
+                <div class="quantity-controls">
+                    <button id="modalQtyMinus">-</button>
+                    <span id="modalQtyValue">1</span>
+                    <button id="modalQtyPlus">+</button>
+                </div>
+            </div>
+            <div class="modal-total-price" id="modalTotalPrice"></div>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn" id="modalAddToCartBtn">Добавить в корзину</button>
+                <button class="btn-outline" id="closeModalBtn2">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="authModal" style="display:none; position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5); z-index:1000;align-items:center;justify-content:center;">
+        <div style="background:white; max-width:500px; margin:auto;border-radius:48px;padding:32px;">
+            <h3 style="margin-bottom:16px;">Вход в ХолодОк</h3>
+            <div class="auth-choice">
+                <button class="auth-choice-btn" id="choiceOldProfile">Старый профиль</button>
+                <button class="auth-choice-btn" id="choiceNewProfile">Новый аккаунт</button>
+            </div>
+            <div id="oldProfilesBlock">
+                <div id="savedProfilesList" style="max-height:300px; overflow-y:auto;"></div>
+            </div>
+            <div id="newProfileBlock" style="display:none;">
+                <input type="email" id="authEmail" placeholder="Email (example@mail.ru)" autocomplete="off">
+                <div id="emailError" class="error-text"></div>
+                <input type="tel" id="authPhone" placeholder="Телефон (11 цифр, 8 или 7)" autocomplete="off">
+                <div id="phoneError" class="error-text"></div>
+                <input type="password" id="authPassword" placeholder="Пароль" autocomplete="off">
+                <div id="passwordError" class="error-text"></div>
+                <div class="password-requirements" id="passwordReqs">
+                    <div class="requirement" id="reqLength">минимум 8 символов</div>
+                    <div class="requirement" id="reqUpper">заглавная буква (A-Z)</div>
+                    <div class="requirement" id="reqLower">строчная буква (a-z)</div>
+                    <div class="requirement" id="reqDigit">цифра (0-9)</div>
+                </div>
+                <input type="password" id="authConfirmPassword" placeholder="Подтверждение пароля" autocomplete="off">
+                <div id="confirmError" class="error-text"></div>
+                <input type="text" id="authName" placeholder="Имя">
+                <button class="btn" id="doAuthBtn" style="width:100%; margin-top:12px;">Зарегистрироваться</button>
+                <div id="authMessage" class="success-text" style="text-align:center; margin-top:12px;"></div>
+            </div>
+            <button class="btn-outline btn" id="closeModalBtn" style="width:100%; margin-top:16px;">Закрыть</button>
+        </div>
+    </div>
+
+    <div id="passwordModal" style="display:none; position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5); z-index:1001;align-items:center;justify-content:center;">
+        <div style="background:white; max-width:400px; margin:auto;border-radius:48px;padding:32px;">
+            <h3>Введите пароль</h3>
+            <p id="passwordModalEmail" style="color:#2c7da0; margin:8px 0;"></p>
+            <input type="password" id="profilePasswordInput" placeholder="Пароль" autocomplete="off">
+            <div id="passwordModalError" class="error-text"></div>
+            <button class="btn" id="submitPasswordBtn" style="width:100%; margin-top:16px;">Войти</button>
+            <button class="btn-outline btn" id="closePasswordModalBtn" style="width:100%; margin-top:10px;">Отмена</button>
+        </div>
+    </div>
+
+    <!-- МОДАЛ РЕДАКТИРОВАНИЯ -->
+    <div id="editModal" style="display:none; position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5); z-index:1000;align-items:center;justify-content:center;">
+        <div style="background:white; max-width:450px; margin:auto;border-radius:48px;padding:32px;">
+            <h3>Редактировать профиль</h3>
+            <input type="text" id="editName" placeholder="Имя">
+            <input type="tel" id="editPhone" placeholder="Телефон">
+            <button class="btn" id="saveProfileBtn" style="width:100%">Сохранить</button>
+            <button class="btn-outline btn" id="closeEditModalBtn" style="width:100%; margin-top:10px;">Отмена</button>
+        </div>
+    </div>
+</main>
+
+    <div class="container">
+        <div style="text-align: center; padding: 20px 0; color: #5c3e2b;">
+            <h3 style="margin-bottom: 10px; color: #2c7da0;">ХолодОк — Ваш идеальный выбор мороженого</h3>
+            <p style="line-height: 1.6; max-width: 800px; margin: 0 auto;">
+                Мы — семейная компания, специализирующаяся на производстве и доставке натурального мороженого высшего качества. 
+                Наши продукты изготавливаются только из свежих натуральных ингредиентов без консервантов и искусственных добавок. 
+                Мы строго соблюдаем "холодовую цепь" на всех этапах: от производства на современном оборудовании до доставки прямо к вашей двери. 
+                Быстрая доставка в течение 2 часов по городу, индивидуальный подход к каждому заказу и гарантия свежести — вот что отличает ХолодОк. 
+                Попробуйте наши 12 уникальных вкусов и ощутите настоящее удовольствие от натурального мороженого!
+            </p>
+            <p style="margin-top: 10px; font-size: 14px; color: #ad8b72;">
+                © 2026 ХолодОк. Все права защищены. | Контакты: info@holodok.ru | Телефон: +7 (495) 123-45-67
+            </p>
+        </div>
+    </div>
+
+<script>
+    const products = [
+        { id: 1, name: "Морозное облако", price: 159, weight: "90 г", image: "https://plus.unsplash.com/premium_photo-1690440686714-c06a56a1511c?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", description: "Нежнейший пломбир, который тает во рту, словно облако", ingredients: ["Сливки 35% — 45г", "Молоко цельное — 30г", "Сахар — 10г", "Ванилин — 1г", "Яичный желток — 4г"] },
+        { id: 2, name: "Шоколадный экспресс", price: 189, weight: "95 г", image: "https://media.istockphoto.com/id/2228671132/photo/isolated-chocolate-ice-cream-cone-drizzled-with-rich-chocolate.webp?a=1&b=1&s=612x612&w=0&k=20&c=BYj_Lqid1q0q860vENN6Rh_K4sLPnVFguRWEJSfviW4=", description: "Насыщенный шоколадный вкус с кусочками брауни, как express-билет в счастье", ingredients: ["Какао-масло — 20г", "Какао-порошок — 15г", "Сливки — 40г", "Шоколад 70% — 15г", "Кусочки брауни — 5г"] },
+        { id: 3, name: "Клубничный закат", price: 219, weight: "100 г", image: "https://plus.unsplash.com/premium_photo-1742103625076-f5e445912d6a?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDR8fGljZSUyMGNyZWFtJTIwc3RyYXdiZXJyeXxlbnwwfHwwfHx8MA%3D%3D", description: "Как летний закат в деревне — сладкий, тёплый и незабываемый", ingredients: ["Клубника свежая — 35г", "Сыр маскарпоне — 30г", "Сливки — 25г", "Песочная крошка — 10г"] },
+        { id: 4, name: "Фисташковый сфинкс", price: 249, weight: "90 г", image: "https://plus.unsplash.com/premium_photo-1663853490433-5ed3ff06f9ea?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8aWNlJTIwY3JlYW0lMjBncmVlbnxlbnwwfHwwfHx8MA%3D%3D", description: "Загадочный и изысканный вкус настоящих итальянских фисташек", ingredients: ["Фисташка — 15г", "Сливки — 45г", "Молоко — 20г", "Сахар — 8г", "Паста фисташковая — 2г"] },
+        { id: 5, name: "Тропический бриз", price: 199, weight: "100 г", image: "https://plus.unsplash.com/premium_photo-1669905375045-990742dc0ca4?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aWNlJTIwY3JlYW0lMjBtYW5nb3xlbnwwfHwwfHx8MA%3D%3D", description: "Взрыв манго и маракуйи — словно морской бриз на райском острове", ingredients: ["Манго — 50г", "Маракуйя — 30г", "Сахар — 15г", "Лимонный сок — 3г", "Вода — 2г"] },
+        { id: 6, name: "Карамельный взрыв", price: 179, weight: "95 г", image: "https://plus.unsplash.com/premium_photo-1675279010969-e85bfbd402dc?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aWNlJTIwY3JlYW0lMjBTYWx0eS1zd2VldCUyMGNhcmFtZWx8ZW58MHx8MHx8fDA%3D", description: "Солёно-сладкая карамель с хрустящим попкорном — фейерверк вкуса", ingredients: ["Карамель — 30г", "Сливки — 40г", "Масло — 5г", "Попкорн — 15г", "Морская соль — 5г"] },
+        { id: 7, name: "Цитрусовый фреш", price: 169, weight: "100 г", image: "https://media.istockphoto.com/id/1270107044/photo/lemon-flavored-ice-pops-on-a-glass-plate-with-ice.webp?a=1&b=1&s=612x612&w=0&k=20&c=it8LdIV2clVzcZxTzdVSiNlUxEKQnLHtiVdhW4zHOBM=", description: "Освежающий лимонный сорбет, бодрящий как утренний фреш", ingredients: ["Лимонный сок — 45г", "Цедра — 5г", "Сахар — 35г", "Вода — 10г", "Мята — 5г"] },
+        { id: 8, name: "Мятная свежесть", price: 189, weight: "90 г", image: "https://media.istockphoto.com/id/1406230986/photo/homemade-green-mint-chocolate-chip-ice-cream.webp?a=1&b=1&s=612x612&w=0&k=20&c=9phICBz-uVMy3rH6Q7h-fl76yd8MK8A7bCYcQo8_Ooo=", description: "Прохладная мята с шоколадной крошкой — идеальное летнее настроение", ingredients: ["Мятный сироп — 20г", "Сливки — 50г", "Шоколадная крошка — 12г", "Сахар — 8г"] },
+        { id: 9, name: "Солёный бриз", price: 229, weight: "95 г", image: "https://plus.unsplash.com/premium_photo-1776375365800-8c22057b877e?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGljZSUyMGNyZWFtJTIwc3dlZXQlMjBjYXJhbWVsJTIwYW5kJTIwc2VhJTIwc2FsdHxlbnwwfHwwfHx8MA%3D%3D", description: "Идеальный баланс сладкой карамели и морской соли — как бриз у океана", ingredients: ["Карамель — 35г", "Сливки — 45г", "Масло — 8г", "Соль — 2г", "Ваниль — 5г"] },
+        { id: 10, name: "Лавандовый сон", price: 239, weight: "90 г", image: "https://plus.unsplash.com/premium_photo-1691095182210-a1b3c46a31d6?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aWNlJTIwY3JlYW0lMjB3aXRoJTIwaG9uZXl8ZW58MHx8MHx8fDA%3D", description: "Нежный цветочный аромат с мёдом — уносит в сладкие сны", ingredients: ["Мёд — 25г", "Сливки — 50г", "Лаванда сушёная — 3г", "Сахар — 12г"] },
+        { id: 11, name: "Кокосовая бухта", price: 199, weight: "100 г", image: "https://plus.unsplash.com/premium_photo-1681488352667-c4d00b903416?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aWNlJTIwY3JlYW0lMjB3aXRoJTIwY29jb251dCUyMGZsYXZvcnxlbnwwfHwwfHx8MA%3D%3D", description: "Погружение в райский уголок с кокосовым вкусом", ingredients: ["Кокосовое молоко — 50г", "Стружка кокоса — 20г", "Сливки — 25г", "Сахар — 5г"] },
+        { id: 12, name: "Тирамису-мистик", price: 259, weight: "95 г", image: "https://media.istockphoto.com/id/843548994/photo/tiramisu-popsicles-ice-pops-with-italian-savoiardi-cookies-and-tiramisu-ingredients-on-rustic.webp?a=1&b=1&s=612x612&w=0&k=20&c=0GFUax6jj9UzJjsS1CNk9SbC30Y9dCq3A3iLaPIXI6s=", description: "Загадочное сочетание кофе, маскарпоне и печенья савоярди", ingredients: ["Сыр маскарпоне — 40г", "Кофе — 20г", "Ликёр — 5г", "Печенье савоярди — 20г", "Какао — 10г"] }
+    ];
+
+    let users = {};
+    let currentUser = null;
+    let currentUserCart = [];
+    let pendingProfileEmail = null;
+    let currentModalProduct = null;
+    let modalQuantity = 1;
+
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+        return re.test(email);
+    }
+
+    function isValidPhone(phone) {
+        if(!phone) return true;
+        const digits = phone.replace(/\D/g, '');
+        return digits.length === 11 && (digits[0] === '8' || digits[0] === '7');
+    }
+
+    function checkPasswordStrength(password) {
+        return {
+            length: password.length >= 8,
+            upper: /[A-Z]/.test(password),
+            lower: /[a-z]/.test(password),
+            digit: /[0-9]/.test(password)
+        };
+    }
+    
+    function isPasswordValid(password) {
+        const checks = checkPasswordStrength(password);
+        return checks.length && checks.upper && checks.lower && checks.digit;
+    }
+    
+    function updatePasswordRequirements(password) {
+        const checks = checkPasswordStrength(password);
+        const isFullyValid = checks.length && checks.upper && checks.lower && checks.digit;
+        const reqsContainer = document.getElementById("passwordReqs");
+        if(password === "" || isFullyValid) {
+            reqsContainer.classList.remove("show");
+            return true;
+        }
+        reqsContainer.classList.add("show");
+        const reqs = [
+            { id: 'reqLength', text: 'минимум 8 символов', ok: checks.length },
+            { id: 'reqUpper', text: 'заглавная буква (A-Z)', ok: checks.upper },
+            { id: 'reqLower', text: 'строчная буква (a-z)', ok: checks.lower },
+            { id: 'reqDigit', text: 'цифра (0-9)', ok: checks.digit }
+        ];
+        reqs.forEach(req => {
+            const el = document.getElementById(req.id);
+            if(el) {
+                el.innerHTML = (req.ok ? '✅' : '❌') + ' ' + req.text;
+                el.className = req.ok ? 'requirement ok' : 'requirement bad';
+            }
+        });
+        return false;
+    }
+
+    function loadData() {
+        const savedUsers = localStorage.getItem("holodok_users_v1");
+        if(savedUsers) {
+            users = JSON.parse(savedUsers);
+        } else {
+            users = {};
+        }
+        const lastUserEmail = localStorage.getItem("holodok_lastUserEmail_v1");
+        if(lastUserEmail && users[lastUserEmail]) {
+            const userData = users[lastUserEmail];
+            currentUser = {
+                email: lastUserEmail,
+                name: userData.name,
+                phone: userData.phone,
+                orders: userData.orders || []
+            };
+            currentUserCart = [...(userData.cart || [])];
+        } else {
+            currentUser = null;
+            currentUserCart = [];
+        }
+        updateCartCount();
+    }
+
+    function saveData() {
+        if(currentUser && users[currentUser.email]) {
+            users[currentUser.email].name = currentUser.name;
+            users[currentUser.email].phone = currentUser.phone;
+            users[currentUser.email].orders = currentUser.orders || [];
+            users[currentUser.email].cart = currentUserCart;
+        }
+        localStorage.setItem("holodok_users_v1", JSON.stringify(users));
+        if(currentUser) {
+            localStorage.setItem("holodok_lastUserEmail_v1", currentUser.email);
+        } else {
+            localStorage.removeItem("holodok_lastUserEmail_v1");
+        }
+    }
+
+    function updateCartCount() {
+        const total = currentUserCart.reduce((s, i) => s + i.quantity, 0);
+        document.getElementById("cartCount").innerText = total;
+    }
+
+    function addToCart(productId, quantity = 1) {
+        if(!currentUser) { 
+            alert("Войдите в аккаунт"); 
+            openAuthModal(); 
+            return false; 
+        }
+        const existing = currentUserCart.find(i => i.id === productId);
+        if(existing) {
+            existing.quantity += quantity;
+        } else {
+            currentUserCart.push({ id: productId, quantity: quantity });
+        }
+        saveData();
+        updateCartCount();
+        alert(`Добавлено в корзину (${quantity} шт.)!`);
+        if(document.getElementById("cartPage").classList.contains("active-page")) {
+            renderCartPage();
+        }
+        return true;
+    }
+
+    function removeFromCart(productId) {
+        currentUserCart = currentUserCart.filter(i => i.id !== productId);
+        saveData();
+        if(document.getElementById("cartPage").classList.contains("active-page")) {
+            renderCartPage();
+        }
+        updateCartCount();
+    }
+
+    function updateQuantity(productId, delta) {
+        const item = currentUserCart.find(i => i.id === productId);
+        if(item) {
+            item.quantity += delta;
+            if(item.quantity <= 0) {
+                removeFromCart(productId);
+            } else {
+                saveData();
+                if(document.getElementById("cartPage").classList.contains("active-page")) {
+                    renderCartPage();
+                }
+                updateCartCount();
+            }
+        }
+    }
+
+    function getCartTotal() {
+        return currentUserCart.reduce((sum, item) => {
+            const p = products.find(pr => pr.id === item.id);
+            return sum + (p ? p.price * item.quantity : 0);
+        }, 0);
+    }
+
+    function openProductModal(productId) {
+        const product = products.find(p => p.id === productId);
+        if(!product) return;
+        currentModalProduct = product;
+        modalQuantity = 1;
+        document.getElementById("modalQtyValue").innerText = "1";
+        document.getElementById("modalImg").src = product.image;
+        document.getElementById("modalImg").onerror = function() { this.src = 'https://placehold.co/300x300?text=❄️'; };
+        document.getElementById("modalTitle").innerText = product.name;
+        document.getElementById("modalPrice").innerText = product.price + " ₽ / шт";
+        document.getElementById("modalDesc").innerText = product.description;
+        
+        const compositionHtml = `
+            <div class="ingredient-item"><span>Общий вес:</span><span><strong>${product.weight}</strong></span></div>
+            ${product.ingredients.map(ing => `<div class="ingredient-item"><span> ${ing.split('—')[0]}</span><span>${ing.split('—')[1] || ''}</span></div>`).join('')}
+        `;
+        document.getElementById("modalComposition").innerHTML = compositionHtml;
+        
+        updateModalTotalPrice();
+        document.getElementById("productModal").style.display = "flex";
+    }
+    
+    function updateModalTotalPrice() {
+        if(currentModalProduct) {
+            const total = currentModalProduct.price * modalQuantity;
+            document.getElementById("modalTotalPrice").innerHTML = `Итого: ${total} ₽ (${modalQuantity} шт × ${currentModalProduct.price} ₽)`;
+        }
+    }
+    
+    function changeModalQuantity(delta) {
+        const newQty = modalQuantity + delta;
+        if(newQty >= 1 && newQty <= 99) {
+            modalQuantity = newQty;
+            document.getElementById("modalQtyValue").innerText = modalQuantity;
+            updateModalTotalPrice();
+        }
+    }
+
+    function renderHomePage() {
+        const container = document.getElementById("homeContent");
+        let authMessage = '';
+        if(!currentUser) {
+            const savedEmails = Object.keys(users);
+            let profilesHtml = '';
+            if(savedEmails.length > 0) {
+                profilesHtml = `
+                    <div class="saved-profiles">
+                        <h3>Сохранённые профили</h3>
+                        <div class="profile-list">
+                            ${savedEmails.map(email => `
+                                <div class="profile-card-small" data-email="${email}">
+                                    <div class="email">${email}</div>
+                                    <div class="name">${users[email].name || email.split('@')[0]}</div>
+                                    <div class="name" style="font-size:12px;">Заказов: ${(users[email].orders || []).length}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            authMessage = `
+                <div class="auth-message">
+                    <h2>Добро пожаловать в ХолодОк!</h2>
+                    <p>Зарегистрируйтесь или войдите, чтобы делать заказы.</p>
+                    ${profilesHtml}
+                    <button class="btn" id="authFromHomeBtn" style="margin-top:20px;">Зарегистрироваться / Войти</button>
+                </div>
+            `;
+        }
+        
+        container.innerHTML = `${authMessage}<h1>Наше мороженое</h1><p>Натуральные ингредиенты, строгая холодовая цепь, доставка за 2 часа. 12 уникальных вкусов!</p><div class="catalog-grid" id="catalogGrid"></div>`;
+        const grid = document.getElementById("catalogGrid");
+        if(grid) {
+            grid.innerHTML = products.map(p => `
+                <div class="product-card" data-id="${p.id}">
+                    <img class="product-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=IceCream'">
+                    <div class="product-title">${p.name}</div>
+                    <div class="product-price">${p.price} ₽</div>
+                    <div style="font-size:12px; color:#ad8b72;">${p.weight}</div>
+                </div>
+            `).join('');
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = parseInt(card.dataset.id);
+                    openProductModal(id);
+                });
+            });
+        }
+        document.getElementById("authFromHomeBtn")?.addEventListener("click", openAuthModal);
+        document.querySelectorAll('.profile-card-small').forEach(card => {
+            card.addEventListener('click', () => {
+                const email = card.dataset.email;
+                if(users[email]) {
+                    pendingProfileEmail = email;
+                    document.getElementById("passwordModalEmail").innerText = email;
+                    document.getElementById("profilePasswordInput").value = "";
+                    document.getElementById("passwordModalError").innerText = "";
+                    document.getElementById("passwordModal").style.display = "flex";
+                }
+            });
+        });
+    }
+
+    function renderCartPage() {
+        const container = document.getElementById("cartContainer");
+        if(currentUserCart.length === 0) {
+            container.innerHTML = `<div style="text-align:center;padding:40px;">Корзина пуста</div>`;
+            document.getElementById("cartTotalPrice").innerText = "0 ₽";
+            return;
+        }
+        let html = `<div class="cart-items">`;
+        currentUserCart.forEach(item => {
+            const p = products.find(pr => pr.id === item.id);
+            if(!p) return;
+            html += `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <img class="cart-item-img" src="${p.image}" alt="${p.name}" onerror="this.src='https://placehold.co/50x50?text=IceCream'">
+                        <div>
+                            <div><strong>${p.name}</strong></div>
+                            <div>${p.price} ₽ × ${item.quantity} шт</div>
+                            <div style="font-size:11px; color:#ad8b72;">${p.weight}</div>
+                        </div>
+                    </div>
+                    <div class="cart-quantity">
+                        <button data-id="${p.id}" data-delta="-1">-</button>
+                        <span>${item.quantity}</span>
+                        <button data-id="${p.id}" data-delta="1">+</button>
+                        <button data-id="${p.id}" data-remove="1" style="background:#ffe0cf; margin-left: 8px;">Удалить</button>
+                    </div>
+                    <div><strong>${p.price * item.quantity} ₽</strong></div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        container.innerHTML = html;
+        document.getElementById("cartTotalPrice").innerHTML = getCartTotal() + " ₽";
+        
+        document.querySelectorAll('.cart-quantity button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.dataset.id);
+                if(btn.dataset.delta) {
+                    updateQuantity(id, parseInt(btn.dataset.delta));
+                } else if(btn.dataset.remove) {
+                    removeFromCart(id);
+                }
+            });
+        });
+    }
+
+    function renderProfile() {
+        const container = document.getElementById("profileContainer");
+        if(!currentUser) {
+            container.innerHTML = `<div class="auth-message"><p>Войдите в аккаунт, чтобы увидеть профиль</p></div>`;
+            document.getElementById("loginFromProfile")?.addEventListener("click", (e) => { e.preventDefault(); openAuthModal(); });
+            return;
+        }
+        
+        container.innerHTML = `
+            <div class="profile-grid">
+                <div class="profile-sidebar">
+                    <div class="profile-avatar"></div>
+                    <h3>${currentUser.name || "Покупатель"}</h3>
+                    <p>${currentUser.email}</p>
+                    <p>${currentUser.phone || "Телефон не указан"}</p>
+                    <button class="btn-outline edit-profile-btn" id="editProfileBtn">Редактировать</button>
+                </div>
+                <div class="profile-main">
+                    <div class="profile-tabs">
+                        <button class="profile-tab active" data-tab="info">Мои данные</button>
+                        <button class="profile-tab" data-tab="orders">История заказов (${(currentUser.orders || []).length})</button>
+                    </div>
+                    <div id="tab-info" class="profile-tab-content active">
+                        <div class="info-row"><div class="info-label">Email:</div><div class="info-value">${currentUser.email}</div></div>
+                        <div class="info-row"><div class="info-label">Имя:</div><div class="info-value">${currentUser.name || "—"}</div></div>
+                        <div class="info-row"><div class="info-label">Телефон:</div><div class="info-value">${currentUser.phone || "—"}</div></div>
+                        <div class="info-row"><div class="info-label">Всего заказов:</div><div class="info-value">${(currentUser.orders || []).length}</div></div>
+                        <div class="info-row"><div class="info-label">Товаров в корзине:</div><div class="info-value">${currentUserCart.reduce((s,i)=>s+i.quantity,0)} шт.</div></div>
+                    </div>
+                    <div id="tab-orders" class="profile-tab-content">
+                        ${renderOrdersHtml()}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById("editProfileBtn")?.addEventListener("click", () => openEditModal());
+        document.querySelectorAll(".profile-tab").forEach(tab => {
+            tab.addEventListener("click", () => {
+                const tabName = tab.dataset.tab;
+                document.querySelectorAll(".profile-tab").forEach(t => t.classList.remove("active"));
+                tab.classList.add("active");
+                document.getElementById("tab-info").classList.remove("active");
+                document.getElementById("tab-orders").classList.remove("active");
+                if(tabName === "info") document.getElementById("tab-info").classList.add("active");
+                else document.getElementById("tab-orders").classList.add("active");
+            });
+        });
+        
+        document.querySelectorAll('.order-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const details = card.querySelector('.order-details');
+                if(details) {
+                    details.classList.toggle('show');
+                }
+            });
+        });
+    }
+    
+    function renderOrdersHtml() {
+        const orders = currentUser.orders || [];
+        if(orders.length === 0) return '<div style="text-align:center;padding:40px;">У вас пока нет заказов</div>';
+        return orders.slice().reverse().map(order => `
+            <div class="order-card">
+                <div class="order-header">
+                    <span>Заказ #${order.id}</span>
+                    <span>${order.date}</span>
+                </div>
+                <div><strong>Сумма:</strong> ${order.total} ₽</div>
+                <div><strong>Доставка:</strong> ${order.address}</div>
+                <div class="order-products"><strong>Состав:</strong> ${order.items.map(i => `${i.name} x${i.qty}`).join(", ")}</div>
+                <div class="order-details">
+                    <strong>Детальный состав:</strong>
+                    ${order.items.map(item => `
+                        <div class="detail-item">
+                            <span>${item.name}</span>
+                            <span>${item.qty} шт × ${item.price} ₽ = ${item.qty * item.price} ₽</span>
+                        </div>
+                    `).join('')}
+                    <div class="detail-item" style="border-top: 2px solid #ffdfc4; margin-top: 8px; padding-top: 8px; font-weight: 700;">
+                        <span>Итого:</span>
+                        <span>${order.total} ₽</span>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 12px; font-size: 12px; color: #2c7da0;">▼ Нажмите для подробностей ▼</div>
+            </div>
+        `).join('');
+    }
+    
+    function openEditModal() {
+        document.getElementById("editName").value = currentUser.name || "";
+        document.getElementById("editPhone").value = currentUser.phone || "";
+        document.getElementById("editModal").style.display = "flex";
+    }
+    
+    function saveProfileEdit() {
+        const newName = document.getElementById("editName").value.trim();
+        let newPhone = document.getElementById("editPhone").value.trim();
+        if(newPhone && !isValidPhone(newPhone)) {
+            alert("Телефон должен содержать 11 цифр и начинаться с 8 или 7");
+            return;
+        }
+        if(currentUser) {
+            if(newName) currentUser.name = newName;
+            if(newPhone) currentUser.phone = newPhone;
+            saveData();
+            renderProfile();
+            renderHomePage();
+            alert("Профиль обновлён");
+        }
+        document.getElementById("editModal").style.display = "none";
+    }
+
+    function createOrder(address, comment) {
+        if(!currentUser) { alert("Авторизуйтесь"); return false; }
+        if(currentUserCart.length === 0) { alert("Корзина пуста"); return false; }
+        const orderItems = currentUserCart.map(c => {
+            const p = products.find(pr => pr.id === c.id);
+            return { name: p.name, qty: c.quantity, price: p.price, weight: p.weight };
+        });
+        const newOrder = {
+            id: Date.now(),
+            date: new Date().toLocaleString(),
+            total: getCartTotal(),
+            address: address || "Самовывоз",
+            comment: comment || "",
+            items: orderItems
+        };
+        if(!currentUser.orders) currentUser.orders = [];
+        currentUser.orders.push(newOrder);
+        currentUserCart = [];
+        saveData();
+        alert(`Заказ оформлен! Доставим с Холодком.`);
+        return true;
+    }
+    
+    function showPage(pageName) {
+        ["homePage", "cartPage", "profilePage", "checkoutPage"].forEach(id => {
+            document.getElementById(id).classList.remove("active-page");
+        });
+        document.getElementById(pageName).classList.add("active-page");
+        if(pageName === "homePage") renderHomePage();
+        if(pageName === "cartPage") renderCartPage();
+        if(pageName === "profilePage") renderProfile();
+        if(pageName === "checkoutPage") {
+            document.getElementById("checkoutSummary").innerHTML = `<strong>К оплате: ${getCartTotal()} ₽</strong><br>Товаров: ${currentUserCart.reduce((s,i)=>s+i.quantity,0)}`;
+            document.getElementById("deliveryName").value = currentUser?.name || "";
+            document.getElementById("deliveryPhone").value = currentUser?.phone || "";
+        }
+    }
+    
+    function loginWithPassword(email, password) {
+        if(users[email] && users[email].password === password) {
+            currentUser = {
+                email: email,
+                name: users[email].name,
+                phone: users[email].phone,
+                orders: users[email].orders || []
+            };
+            currentUserCart = [...(users[email].cart || [])];
+            saveData();
+            updateUIAfterAuth();
+            return true;
+        }
+        return false;
+    }
+    
+    function openAuthModal() {
+        document.getElementById("choiceOldProfile").classList.add("active");
+        document.getElementById("choiceNewProfile").classList.remove("active");
+        document.getElementById("oldProfilesBlock").style.display = "block";
+        document.getElementById("newProfileBlock").style.display = "none";
+        
+        const savedEmails = Object.keys(users);
+        const profilesContainer = document.getElementById("savedProfilesList");
+        if(savedEmails.length === 0) {
+            profilesContainer.innerHTML = '<p style="color:#ad8b72; text-align:center; padding:20px;">Нет сохранённых профилей. Создайте новый!</p>';
+        } else {
+            profilesContainer.innerHTML = `
+                <div class="profile-list">
+                    ${savedEmails.map(email => `
+                        <div class="profile-card-small" data-email="${email}" style="width:100%;">
+                            <div class="email">${email}</div>
+                            <div class="name">${users[email].name || email.split('@')[0]}</div>
+                            <div class="name" style="font-size:12px;">Заказов: ${(users[email].orders || []).length}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            document.querySelectorAll('#savedProfilesList .profile-card-small').forEach(card => {
+                card.addEventListener('click', () => {
+                    const email = card.dataset.email;
+                    pendingProfileEmail = email;
+                    document.getElementById("passwordModalEmail").innerText = email;
+                    document.getElementById("profilePasswordInput").value = "";
+                    document.getElementById("passwordModalError").innerText = "";
+                    document.getElementById("passwordModal").style.display = "flex";
+                    closeAuthModal();
+                });
+            });
+        }
+        document.getElementById("authModal").style.display = "flex";
+    }
+    
+    function handlePasswordSubmit() {
+        const password = document.getElementById("profilePasswordInput").value;
+        if(!pendingProfileEmail) return;
+        if(loginWithPassword(pendingProfileEmail, password)) {
+            document.getElementById("passwordModal").style.display = "none";
+            pendingProfileEmail = null;
+            alert(`Добро пожаловать в ХолодОк, ${currentUser.name || pendingProfileEmail}!`);
+        } else {
+            document.getElementById("passwordModalError").innerText = "Неверный пароль";
+        }
+    }
+    
+    function switchToNewProfile() {
+        document.getElementById("choiceNewProfile").classList.add("active");
+        document.getElementById("choiceOldProfile").classList.remove("active");
+        document.getElementById("oldProfilesBlock").style.display = "none";
+        document.getElementById("newProfileBlock").style.display = "block";
+        document.getElementById("authEmail").value = "";
+        document.getElementById("authPhone").value = "";
+        document.getElementById("authPassword").value = "";
+        document.getElementById("authConfirmPassword").value = "";
+        document.getElementById("authName").value = "";
+        document.getElementById("emailError").innerText = "";
+        document.getElementById("phoneError").innerText = "";
+        document.getElementById("passwordError").innerText = "";
+        document.getElementById("confirmError").innerText = "";
+        document.getElementById("authMessage").innerText = "";
+        const reqsContainer = document.getElementById("passwordReqs");
+        reqsContainer.classList.remove("show");
+    }
+    
+    function handleRegistration() {
+        const email = document.getElementById("authEmail").value.trim();
+        const phone = document.getElementById("authPhone").value.trim();
+        const password = document.getElementById("authPassword").value;
+        const confirm = document.getElementById("authConfirmPassword").value;
+        const name = document.getElementById("authName").value.trim();
+        
+        let valid = true;
+        document.getElementById("emailError").innerText = "";
+        document.getElementById("phoneError").innerText = "";
+        document.getElementById("passwordError").innerText = "";
+        document.getElementById("confirmError").innerText = "";
+        
+        if(!isValidEmail(email)) { document.getElementById("emailError").innerText = "Введите настоящий email"; valid = false; }
+        if(phone && !isValidPhone(phone)) { document.getElementById("phoneError").innerText = "Телефон: 11 цифр, начинается с 8 или 7"; valid = false; }
+        if(!isPasswordValid(password)) {
+            document.getElementById("passwordError").innerHTML = "Пароль не соответствует требованиям!";
+            valid = false;
+        }
+        if(password !== confirm) { document.getElementById("confirmError").innerText = "Пароли не совпадают"; valid = false; }
+        if(users[email]) { document.getElementById("emailError").innerText = "Пользователь уже существует"; valid = false; }
+        if(!valid) return;
+        
+        users[email] = { password, name: name || email.split('@')[0], phone: phone || "", orders: [], cart: [] };
+        currentUser = { email, name: users[email].name, phone: users[email].phone, orders: [] };
+        currentUserCart = [];
+        saveData();
+        document.getElementById("authMessage").innerText = "Регистрация успешна!";
+        setTimeout(() => { closeAuthModal(); updateUIAfterAuth(); }, 800);
+    }
+    
+    function updateUIAfterAuth() {
+        const logoutBtn = document.getElementById("logoutBtn");
+        const loginBtn = document.getElementById("loginRegisterBtn");
+        if(currentUser) {
+            logoutBtn.style.display = "inline-block";
+            loginBtn.style.display = "none";
+        } else {
+            logoutBtn.style.display = "none";
+            loginBtn.style.display = "inline-block";
+        }
+        renderHomePage();
+        renderProfile();
+        updateCartCount();
+        showPage("homePage");
+    }
+    
+    function logout() {
+        if(currentUser && users[currentUser.email]) {
+            users[currentUser.email].cart = currentUserCart;
+            saveData();
+        }
+        currentUser = null;
+        currentUserCart = [];
+        saveData();
+        updateCartCount();
+        updateUIAfterAuth();
+        showPage("homePage");
+        alert("Вы вышли из аккаунта ХолодОк");
+    }
+    
+    function closeAuthModal() { document.getElementById("authModal").style.display = "none"; }
+    function closePasswordModal() { document.getElementById("passwordModal").style.display = "none"; pendingProfileEmail = null; }
+    function closeEditModal() { document.getElementById("editModal").style.display = "none"; }
+    function closeProductModal() { document.getElementById("productModal").style.display = "none"; currentModalProduct = null; modalQuantity = 1; }
+    
+    loadData();
+    updateUIAfterAuth();
+    
+    document.querySelectorAll("[data-page]").forEach(link => {
+        link.addEventListener("click", (e) => { e.preventDefault(); showPage(link.dataset.page + "Page"); });
+    });
+    document.getElementById("cartIcon").addEventListener("click", () => showPage("cartPage"));
+    document.getElementById("backToHomeBtn")?.addEventListener("click", () => showPage("homePage"));
+    document.getElementById("cancelCheckoutBtn")?.addEventListener("click", () => showPage("cartPage"));
+    document.getElementById("checkoutBtn")?.addEventListener("click", () => {
+        if(!currentUser) { alert("Войдите в аккаунт"); openAuthModal(); return; }
+        if(currentUserCart.length === 0) alert("Корзина пуста");
+        else showPage("checkoutPage");
+    });
+    document.getElementById("confirmOrderBtn")?.addEventListener("click", () => {
+        const addr = document.getElementById("deliveryAddress").value;
+        const comm = document.getElementById("deliveryComment").value;
+        if(createOrder(addr, comm)) showPage("profilePage");
+    });
+    document.getElementById("loginRegisterBtn").addEventListener("click", openAuthModal);
+    document.getElementById("closeModalBtn").addEventListener("click", closeAuthModal);
+    document.getElementById("logoutBtn").addEventListener("click", logout);
+    document.getElementById("saveProfileBtn")?.addEventListener("click", saveProfileEdit);
+    document.getElementById("closeEditModalBtn")?.addEventListener("click", closeEditModal);
+    document.getElementById("choiceOldProfile")?.addEventListener("click", () => {
+        document.getElementById("oldProfilesBlock").style.display = "block";
+        document.getElementById("newProfileBlock").style.display = "none";
+        document.getElementById("choiceOldProfile").classList.add("active");
+        document.getElementById("choiceNewProfile").classList.remove("active");
+    });
+    document.getElementById("choiceNewProfile")?.addEventListener("click", switchToNewProfile);
+    document.getElementById("doAuthBtn")?.addEventListener("click", handleRegistration);
+    document.getElementById("submitPasswordBtn")?.addEventListener("click", handlePasswordSubmit);
+    document.getElementById("closePasswordModalBtn")?.addEventListener("click", closePasswordModal);
+    document.getElementById("closeModalBtn2")?.addEventListener("click", closeProductModal);
+    document.getElementById("modalAddToCartBtn")?.addEventListener("click", () => {
+        if(currentModalProduct) {
+            addToCart(currentModalProduct.id, modalQuantity);
+            closeProductModal();
+        }
+    });
+    document.getElementById("modalQtyMinus")?.addEventListener("click", () => changeModalQuantity(-1));
+    document.getElementById("modalQtyPlus")?.addEventListener("click", () => changeModalQuantity(1));
+    
+    const passwordInput = document.getElementById("authPassword");
+    if(passwordInput) {
+        passwordInput.addEventListener("input", (e) => updatePasswordRequirements(e.target.value));
+    }
+    
+    window.onclick = (e) => { 
+        if(e.target === document.getElementById("authModal")) closeAuthModal(); 
+        if(e.target === document.getElementById("editModal")) closeEditModal();
+        if(e.target === document.getElementById("passwordModal")) closePasswordModal();
+        if(e.target === document.getElementById("productModal")) closeProductModal();
+    };
+</script>
+</body>
+</html>
